@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Vouch — CS 4800 Assignment 2 base app
 
 A **customer-facing functional prototype** of a campus peer-tutoring marketplace, based on the Vouch project documents. Built with React, TypeScript and Vite. No backend or database is connected yet.
