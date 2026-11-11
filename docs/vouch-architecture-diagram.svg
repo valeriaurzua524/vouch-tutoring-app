@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 936" width="1520" height="1872" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <rect x="0" y="0" width="760" height="936" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#9a9a94"/>
+    </marker>
+  </defs>
+
+  <text x="24" y="34" font-size="15" font-weight="600" fill="#1f1f1f">Vouch Software Architecture: reviews reach the ledger only through an attested booking</text>
+
+  <!-- Actors -->
+  <g>
+    <rect x="24" y="60" width="216" height="56" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+    <text x="132" y="84" text-anchor="middle" font-weight="600" fill="#1f1f1f">Student</text>
+    <text x="132" y="100" text-anchor="middle" font-size="11.5" fill="#5f5f5f">Requests help, books, reviews</text>
+    <rect x="272" y="60" width="216" height="56" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+    <text x="380" y="84" text-anchor="middle" font-weight="600" fill="#1f1f1f">Tutor</text>
+    <text x="380" y="100" text-anchor="middle" font-size="11.5" fill="#5f5f5f">Lists courses and availability</text>
+    <rect x="520" y="60" width="216" height="56" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+    <text x="628" y="84" text-anchor="middle" font-weight="600" fill="#1f1f1f">Administrator</text>
+    <text x="628" y="100" text-anchor="middle" font-size="11.5" fill="#5f5f5f">Learning-center staff; audits</text>
+  </g>
+
+  <!-- Web client -->
+  <rect x="24" y="152" width="712" height="56" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+  <text x="380" y="176" text-anchor="middle" font-weight="600" fill="#1f1f1f">Web client: React + TypeScript + Tailwind SPA</text>
+  <text x="380" y="192" text-anchor="middle" font-size="11.5" fill="#5f5f5f">Profiles, availability editor, requests, ranked results, booking, reviews, admin audit view</text>
+
+  <!-- API server -->
+  <rect x="24" y="240" width="712" height="304" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+  <text x="40" y="262" font-weight="600" fill="#1f1f1f">Application server: Node.js + Express, modular monolith</text>
+
+  <rect x="40" y="280" width="216" height="72" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+  <text x="52" y="304" font-weight="600" fill="#1f1f1f">M1 Identity and Profiles</text>
+  <text x="52" y="320" font-size="11.5" fill="#5f5f5f">Email login, role-based access</text>
+  <text x="52" y="336" font-size="11.5" fill="#5f5f5f">Profiles, coursework, catalog</text>
+
+  <rect x="272" y="280" width="216" height="72" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+  <text x="284" y="304" font-weight="600" fill="#1f1f1f">M2 Availability</text>
+  <text x="284" y="320" font-size="11.5" fill="#5f5f5f">Recurring weekly blocks</text>
+  <text x="284" y="336" font-size="11.5" fill="#5f5f5f">Stored in UTC, campus time</text>
+
+  <rect x="504" y="280" width="216" height="72" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+  <text x="516" y="304" font-weight="600" fill="#1f1f1f">M3 Requests and Matching</text>
+  <text x="516" y="320" font-size="11.5" fill="#5f5f5f">Structured help requests</text>
+  <text x="516" y="336" font-size="11.5" fill="#5f5f5f">Deterministic weighted score</text>
+
+  <rect x="40" y="368" width="216" height="72" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+  <text x="52" y="392" font-weight="600" fill="#1f1f1f">M5 Booking and Attestation</text>
+  <text x="52" y="408" font-size="11.5" fill="#5f5f5f">Request, accept, schedule, done</text>
+  <text x="52" y="424" font-size="11.5" fill="#5f5f5f">Both parties must confirm</text>
+
+  <rect x="272" y="368" width="216" height="72" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+  <text x="284" y="392" font-weight="600" fill="#1f1f1f">M6 Reviews</text>
+  <text x="284" y="408" font-size="11.5" fill="#5f5f5f">Only on attested sessions</text>
+  <text x="284" y="424" font-size="11.5" fill="#5f5f5f">Appended, never edited</text>
+
+  <rect x="504" y="368" width="216" height="72" rx="8" fill="#e3edf9" stroke="#2f6fd6" stroke-width="2"/>
+  <text x="516" y="392" font-weight="600" fill="#1f1f1f">M7 Reputation Ledger</text>
+  <text x="516" y="408" font-size="11.5" fill="#1f1f1f">Append-only SHA-256 chain</text>
+  <text x="516" y="424" font-size="11.5" fill="#1f1f1f">Verify finds first break</text>
+
+  <rect x="40" y="456" width="216" height="72" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+  <text x="52" y="480" font-weight="600" fill="#1f1f1f">M8 Disputes</text>
+  <text x="52" y="496" font-size="11.5" fill="#5f5f5f">Text records only</text>
+  <text x="52" y="512" font-size="11.5" fill="#5f5f5f">Outcome appended to ledger</text>
+
+  <rect x="272" y="456" width="216" height="72" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+  <text x="284" y="480" font-weight="600" fill="#1f1f1f">M4 Admin and Audit</text>
+  <text x="284" y="496" font-size="11.5" fill="#5f5f5f">Manual match, audit view</text>
+  <text x="284" y="512" font-size="11.5" fill="#5f5f5f">Tamper demo: demo mode only</text>
+
+  <rect x="504" y="456" width="216" height="72" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+  <text x="516" y="480" font-weight="600" fill="#1f1f1f">M9 AI Gateway</text>
+  <text x="516" y="496" font-size="11.5" fill="#5f5f5f">Parse, explain, summarize</text>
+  <text x="516" y="512" font-size="11.5" fill="#5f5f5f">Schema-checked and cached</text>
+
+  <!-- PostgreSQL -->
+  <rect x="24" y="592" width="440" height="256" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+  <text x="40" y="614" font-weight="600" fill="#1f1f1f">PostgreSQL: one database</text>
+  <rect x="40" y="632" width="408" height="56" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+  <text x="52" y="656" font-weight="600" fill="#1f1f1f">Operational tables</text>
+  <text x="52" y="672" font-size="11.5" fill="#5f5f5f">users, courses, availability, requests, bookings, disputes</text>
+  <rect x="40" y="704" width="408" height="56" rx="8" fill="#e3edf9" stroke="#2f6fd6" stroke-width="2"/>
+  <text x="52" y="728" font-weight="600" fill="#1f1f1f">ledger_entries</text>
+  <text x="52" y="744" font-size="11.5" fill="#1f1f1f">INSERT only: UPDATE and DELETE blocked by grants + trigger</text>
+  <rect x="40" y="776" width="408" height="56" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+  <text x="52" y="800" font-weight="600" fill="#1f1f1f">Advisory content</text>
+  <text x="52" y="816" font-size="11.5" fill="#5f5f5f">Session summaries and model cache; never hashed</text>
+
+  <!-- External services -->
+  <rect x="480" y="592" width="256" height="256" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+  <text x="496" y="614" font-weight="600" fill="#1f1f1f">External services</text>
+  <rect x="496" y="632" width="224" height="56" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+  <text x="508" y="656" font-weight="600" fill="#1f1f1f">Hosted LLM API</text>
+  <text x="508" y="672" font-size="11.5" fill="#5f5f5f">Text in, validated JSON out</text>
+  <rect x="496" y="704" width="224" height="72" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25" stroke-dasharray="4 4"/>
+  <text x="508" y="728" font-weight="600" fill="#1f1f1f">Deferred integrations</text>
+  <text x="508" y="744" font-size="11.5" fill="#5f5f5f">Campus SSO, payments, video,</text>
+  <text x="508" y="760" font-size="11.5" fill="#5f5f5f">calendar export, notifications</text>
+  <rect x="496" y="792" width="224" height="40" rx="8" fill="none" stroke="#9a9a94" stroke-width="1.25"/>
+  <text x="608" y="816" text-anchor="middle" font-weight="600" fill="#1f1f1f">Container host: staging</text>
+
+  <!-- Delivery -->
+  <rect x="24" y="872" width="712" height="40" rx="8" fill="#ececec" stroke="#9a9a94" stroke-width="1.25"/>
+  <text x="380" y="896" text-anchor="middle" fill="#1f1f1f">Delivery: GitHub Actions lints, tests and builds each PR, then deploys to staging</text>
+
+  <!-- Connectors -->
+  <g fill="none" stroke="#9a9a94" stroke-width="1.25">
+    <path d="M132 116V152" marker-end="url(#arrow)"/>
+    <path d="M380 116V152" marker-end="url(#arrow)"/>
+    <path d="M628 116V152" marker-end="url(#arrow)"/>
+    <path d="M380 208V240" marker-end="url(#arrow)"/>
+    <path d="M256 404H272" marker-end="url(#arrow)"/>
+    <path d="M488 404H504" marker-end="url(#arrow)"/>
+    <path d="M612 368V352" marker-end="url(#arrow)"/>
+    <path d="M236 544V592" marker-end="url(#arrow)"/>
+    <path d="M608 528V632" marker-end="url(#arrow)"/>
+  </g>
+  <text x="392" y="228" font-size="11.5" fill="#5f5f5f">HTTPS, JSON</text>
+  <text x="622" y="364" font-size="11.5" fill="#5f5f5f">ratings</text>
+  <text x="248" y="572" font-size="11.5" fill="#5f5f5f">SQL as app role only</text>
+  <text x="620" y="572" font-size="11.5" fill="#5f5f5f">HTTPS, cached</text>
+</svg>
