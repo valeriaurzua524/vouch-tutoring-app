@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Vouch — CS 4800 Assignment 2 base app
 
 A **customer-facing functional prototype** of a campus peer-tutoring marketplace, based on the Vouch project documents. Built with React, TypeScript and Vite. No backend or database is connected yet.
@@ -53,3 +54,7 @@ These are **suggestions**, not implemented endpoints.
 
 ## AI disclosure
 Initial React + TypeScript prototype generated with ChatGPT (OpenAI) using the team's Vouch project documents. Team members should review and test all generated code before submission.
+=======
+# vouch-tutoring-app
+CS 4800 Software Engineering - Vouch Peer Tutoring Application
+>>>>>>> 2aeaf710f1f479d9c579c17a4adfb3ca3d52eec5
