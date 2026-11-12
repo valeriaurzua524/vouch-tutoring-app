@@ -80,3 +80,16 @@ The hash input order is `seq|type|bookingId|tutorId|JSON(payload)|ts|prevHash`. 
 - All names, courses and reviews are fictional sample data.
 - AI features are simulated locally so a demo never depends on a live model call.
 - Screenshots are in `screenshots/`.
+
+## Backend
+
+The API lives in `server/` (Express + TypeScript + PostgreSQL). It is not wired to this UI yet.
+
+```bash
+cd server
+npm install
+cp .env.example .env
+npm run dev        # http://localhost:4000/api
+```
+
+See `server/README.md` for the API reference, the score and ledger math, and the demo accounts.

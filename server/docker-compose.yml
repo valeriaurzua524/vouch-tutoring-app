@@ -1,0 +1,36 @@
+# Local development (backlog A2).
+#   docker compose up -d db     PostgreSQL only; run the API with `npm run dev`
+#   docker compose up --build   PostgreSQL and the API together
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: vouch
+      POSTGRES_PASSWORD: vouch
+      POSTGRES_DB: vouch
+    ports:
+      - "5432:5432"
+    volumes:
+      - vouch-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vouch -d vouch"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://vouch:vouch@db:5432/vouch
+      JWT_SECRET: ${JWT_SECRET:-local-compose-secret-change-me}
+      ALLOW_TAMPER_DEMO: "true"
+      CORS_ORIGIN: http://localhost:5173
+      PORT: "4000"
+    ports:
+      - "4000:4000"
+
+volumes:
+  vouch-pgdata:
