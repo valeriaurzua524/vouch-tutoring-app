@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { pathToFileURL } from 'node:url';
 import { config } from '../config.js';
 import { openDb, type Db } from './index.js';
+import { appendEntry } from '../lib/ledger.js';
 
 /**
  * Demo accounts: one admin, four tutors, two students. All fictional.
@@ -71,6 +72,99 @@ export async function seedDemo(db: Db): Promise<void> {
       }
     });
   }
+}
+
+/**
+ * Past sessions with reviews, so tutor profiles and the ledger are not empty
+ * during a live demo. Each one goes through the same steps the API takes:
+ * a completed booking, both attestations, an ATTESTATION ledger entry, then a
+ * REVIEW entry that points at it. The hash chain stays valid.
+ *
+ * Only the dev server calls this (src/server.ts). The tests and `npm run demo`
+ * call seedDemo alone, because they expect an empty ledger.
+ * Runs once: it does nothing if the ledger already has entries.
+ */
+const HISTORY = [
+  { student: 'alex.kim@cpp.edu', tutor: 'maya.chen@cpp.edu', course: 'CS 3310', tags: ['dynamic-programming'], daysAgo: 21, rating: 5,
+    comment: 'Drew the recursion tree for knapsack until it finally clicked. Best hour I spent before the quiz.' },
+  { student: 'alex.kim@cpp.edu', tutor: 'diego.ramirez@cpp.edu', course: 'CS 2400', tags: ['linked-lists'], daysAgo: 16, rating: 4,
+    comment: 'Found the pointer bug in my linked list lab with me instead of for me. Very patient.' },
+  { student: 'jordan.lee@cpp.edu', tutor: 'priya.nair@cpp.edu', course: 'MAT 1150', tags: ['series'], daysAgo: 14, rating: 5,
+    comment: 'Worked three series convergence problems step by step. Her worked examples are great.' },
+  { student: 'jordan.lee@cpp.edu', tutor: 'sam.okafor@cpp.edu', course: 'PHY 1510', tags: ['newtons-laws'], daysAgo: 10, rating: 5,
+    comment: 'Free body diagrams first was exactly the advice I needed for the midterm.' },
+  { student: 'alex.kim@cpp.edu', tutor: 'maya.chen@cpp.edu', course: 'CS 3310', tags: ['graph-algorithms'], daysAgo: 7, rating: 5,
+    comment: 'Clear walkthrough of Dijkstra vs BFS. Left with a list of practice problems.' },
+  { student: 'jordan.lee@cpp.edu', tutor: 'priya.nair@cpp.edu', course: 'MAT 1150', tags: ['taylor-series'], daysAgo: 3, rating: 4,
+    comment: 'Good session on Taylor series. We ran a little short on time at the end.' },
+] as const;
+
+export async function seedHistory(db: Db): Promise<number> {
+  const count = Number((await db.query<{ n: string }>('SELECT count(*) AS n FROM ledger_entries')).rows[0].n);
+  if (count > 0) return 0;
+
+  const idOf = async (email: string) =>
+    (await db.query<{ id: number }>('SELECT id FROM users WHERE email = $1', [email])).rows[0].id;
+
+  for (const h of HISTORY) {
+    const studentId = await idOf(h.student);
+    const tutorId = await idOf(h.tutor);
+    const start = new Date(Date.now() - h.daysAgo * 24 * 60 * 60 * 1000);
+    start.setUTCHours(22, 0, 0, 0); // 2 pm campus time
+    const startIso = start.toISOString();
+    const attestedAt = new Date(start.getTime() + 70 * 60 * 1000).toISOString();
+    const day = start.getUTCDay();
+
+    await db.tx(async (q) => {
+      const req = (await q.query<{ id: number }>(
+        `INSERT INTO help_requests (student_id, course_code, tags, windows, description, status)
+         VALUES ($1, $2, $3::jsonb, $4::jsonb, $5, 'fulfilled') RETURNING id`,
+        [studentId, h.course, JSON.stringify(h.tags),
+         JSON.stringify([{ day_of_week: day, start_min: 14 * 60, end_min: 16 * 60 }]),
+         `Help with ${h.tags.join(', ')}`],
+      )).rows[0];
+
+      const booking = (await q.query<{ id: number }>(
+        `INSERT INTO bookings (request_id, student_id, tutor_id, state, start_at, duration_min)
+         VALUES ($1, $2, $3, 'completed', $4::timestamptz, 60) RETURNING id`,
+        [req.id, studentId, tutorId, startIso],
+      )).rows[0];
+
+      await q.query(
+        `INSERT INTO booking_events (booking_id, actor_id, action, from_state, to_state)
+         VALUES ($1, $2, 'request', NULL, 'requested'), ($1, $3, 'accept', 'requested', 'accepted'),
+                ($1, $2, 'confirm', 'accepted', 'scheduled'), ($1, NULL, 'complete', 'scheduled', 'completed')`,
+        [booking.id, studentId, tutorId],
+      );
+      await q.query(
+        'INSERT INTO attestations (booking_id, user_id, attested_at) VALUES ($1, $2, $4), ($1, $3, $4)',
+        [booking.id, studentId, tutorId, attestedAt],
+      );
+
+      // Same payloads as POST /bookings/:id/attest and POST /bookings/:id/review.
+      const attestation = await appendEntry(q, 'ATTESTATION', booking.id, {
+        booking_id: booking.id,
+        student_id: studentId,
+        tutor_id: tutorId,
+        course_code: h.course,
+        session_start: startIso,
+        duration_min: 60,
+        student_attested_at: attestedAt,
+        tutor_attested_at: attestedAt,
+      });
+      await appendEntry(q, 'REVIEW', booking.id, {
+        booking_id: booking.id,
+        attestation_seq: attestation.seq,
+        attestation_hash: attestation.hash,
+        reviewer_id: studentId,
+        tutor_id: tutorId,
+        course_code: h.course,
+        rating: h.rating,
+        comment: h.comment,
+      });
+    });
+  }
+  return HISTORY.length;
 }
 
 // Run directly: npm run seed

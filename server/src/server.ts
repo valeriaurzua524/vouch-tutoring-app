@@ -1,12 +1,14 @@
 import { createApp } from './app.js';
 import { config } from './config.js';
 import { openDb } from './db/index.js';
-import { DEMO_PASSWORD, seedDemo } from './db/seed.js';
+import { DEMO_PASSWORD, seedDemo, seedHistory } from './db/seed.js';
 
 const db = await openDb();
 if (config.seedDemo) {
   await seedDemo(db);
   console.log(`Demo accounts ready (password: ${DEMO_PASSWORD}). See README for the list.`);
+  const added = await seedHistory(db);
+  if (added) console.log(`Seeded ${added} past sessions with reviews on the ledger.`);
 }
 const app = createApp(db);
 
